@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ProductController extends Controller
 {
@@ -32,7 +33,7 @@ class ProductController extends Controller
         
         $product = Product::create(request()->all());        
 
-        return $product;
+        return Redirect()->route('products.index');
     }
 
     public function show($product)
@@ -47,12 +48,17 @@ class ProductController extends Controller
 
     public function edit($product)
     {
-        return "Showing the form to edit the product with id {$product}";
+        return view('products.edit')->with([
+            'product' => Product::findOrFail($product),
+        ]);
     }
 
     public function update($product)
     {
-        //
+        $product = Product::findOrFail($product);
+
+        $product->update(request()->all());
+        return redirect()->route('products.index');
     }
 
     public function destroy($product)
